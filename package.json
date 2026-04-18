@@ -1,0 +1,13 @@
+{
+  "name": "proservices-marketplace",
+  "version": "1.0.0",
+  "description": "Professional Services Marketplace",
+  "main": "index.html",
+  "scripts": {
+    "start": "serve -s .",
+    "build": "echo 'No build process needed for static site'"
+  },
+  "keywords": ["services", "marketplace", "professional"],
+  "author": "Your Name",
+  "license": "MIT"
+}

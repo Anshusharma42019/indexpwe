@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProServices - Professional Services Marketplace</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f5f5f5; line-height: 1.6; }
+        
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 15px; }
+        
+        .header { background: white; padding: 15px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 24px; font-weight: bold; color: #e74c3c; }
+        .post-btn { background: #6c757d; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; transition: all 0.3s ease; }
+        .post-btn:hover { background: #5a6268; }
+        
+        .search-section { background: white; padding: 20px 0; }
+        .search-input { width: 100%; padding: 12px 15px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; transition: border-color 0.3s ease; }
+        .search-input:focus { outline: none; border-color: #e74c3c; }
+        
+        .breadcrumb { padding: 15px 0; color: #666; font-size: 14px; }
+        .breadcrumb a { color: #e74c3c; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        
+        .page-title { padding: 20px 0; font-size: 28px; color: #333; font-weight: bold; }
+        
+        .services-container { padding: 0 0 40px 0; }
+        .service-card { background: white; margin-bottom: 20px; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); display: flex; gap: 20px; position: relative; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .service-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+        .service-image { 
+            width: 150px; 
+            height: 150px; 
+            background: #ddd; 
+            border-radius: 8px; 
+            flex-shrink: 0; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 48px; 
+            color: white;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .service-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        
+        .service-image.business { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%), url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&crop=face') center/cover; }
+        .service-image.marketing { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%), url('https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=300&h=300&fit=crop') center/cover; }
+        .service-image.finance { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%), url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=300&h=300&fit=crop') center/cover; }
+        .service-image.legal { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%), url('https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=300&h=300&fit=crop') center/cover; }
+        .service-image.tech { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%), url('https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=300&h=300&fit=crop') center/cover; }
+        .service-image.design { background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%), url('https://images.unsplash.com/photo-1561070791-2526d30994b5?w=300&h=300&fit=crop') center/cover; }
+        .service-image.realestate { background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%), url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=300&h=300&fit=crop') center/cover; }
+        .service-image.fitness { background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%), url('https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300&h=300&fit=crop') center/cover; }
+        .service-image.education { background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%), url('https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=300&h=300&fit=crop') center/cover; }
+        .service-content { flex: 1; }
+        .service-title { font-size: 18px; font-weight: bold; margin-bottom: 10px; color: #333; }
+        .service-description { color: #666; line-height: 1.5; margin-bottom: 15px; }
+        .service-meta { display: flex; gap: 20px; color: #888; font-size: 14px; margin-bottom: 15px; }
+        .contact-buttons { display: flex; gap: 10px; }
+        .contact-btn { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
+        .call-btn { background: #dc3545; color: white; }
+        .whatsapp-btn { background: #25d366; color: white; }
+        .telegram-btn { background: #0088cc; color: white; }
+        
+        .new-badge { background: #e74c3c; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; position: absolute; top: 10px; left: 10px; }
+        .service-card { position: relative; }
+        
+        /* Footer Responsive Styles */
+        .footer { background: #2c3e50; color: white; padding: 40px 0 20px; margin-top: 40px; }
+        .footer-content { max-width: 1200px; margin: 0 auto; padding: 0 15px; }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-bottom: 30px; }
+        .footer-section h4 { margin-bottom: 15px; color: #ecf0f1; }
+        .footer-section ul { list-style: none; }
+        .footer-section ul li { margin-bottom: 8px; }
+        .footer-section ul li a { color: #bdc3c7; text-decoration: none; transition: color 0.3s ease; }
+        .footer-section ul li a:hover { color: #ecf0f1; }
+        .footer-bottom { border-top: 1px solid #34495e; padding-top: 20px; text-align: center; color: #bdc3c7; }
+        .social-links { display: flex; gap: 15px; justify-content: center; margin-bottom: 15px; }
+        .social-links a { color: #bdc3c7; font-size: 20px; text-decoration: none; transition: color 0.3s ease; }
+        .social-links a:hover { color: #ecf0f1; }
+        
+        /* Footer Mobile Responsive */
+        @media (max-width: 767px) {
+            .footer { padding: 30px 0 15px; }
+            .footer-grid { 
+                grid-template-columns: 1fr; 
+                gap: 25px; 
+                text-align: center; 
+            }
+            .footer-section h4 { font-size: 16px; }
+            .footer-section ul li { margin-bottom: 10px; }
+            .social-links { margin-bottom: 20px; }
+            .social-links a { font-size: 24px; }
+            .footer-bottom { font-size: 14px; }
+        }
+        
+        @media (max-width: 479px) {
+            .footer { padding: 25px 0 12px; }
+            .footer-grid { gap: 20px; }
+            .footer-section h4 { font-size: 15px; }
+            .footer-section ul li { margin-bottom: 8px; font-size: 14px; }
+            .social-links a { font-size: 22px; }
+            .footer-bottom { font-size: 12px; line-height: 1.4; }
+        }
+        
+        /* Comprehensive Responsive Design */
+        
+        /* Large Desktop (1200px+) */
+        @media (min-width: 1200px) {
+            .container { max-width: 1400px; }
+            .service-card { padding: 25px; }
+            .service-image { 
+                width: 180px; 
+                height: 180px; 
+                font-size: 52px;
+                background-size: cover !important;
+                background-position: center !important;
+            }
+        }
+        
+        /* Desktop (992px - 1199px) */
+        @media (min-width: 992px) and (max-width: 1199px) {
+            .container { max-width: 960px; }
+            .service-image { 
+                width: 160px; 
+                height: 160px; 
+                font-size: 48px;
+                background-size: cover !important;
+                background-position: center !important;
+            }
+        }
+        
+        /* Tablet Landscape (768px - 991px) */
+        @media (min-width: 768px) and (max-width: 991px) {
+            .container { max-width: 720px; }
+            .header-content { padding: 0 15px; }
+            .logo { font-size: 22px; }
+            .post-btn { padding: 8px 16px; font-size: 14px; }
+            
+            .page-title { font-size: 24px; }
+            .service-card { padding: 18px; gap: 15px; }
+            .service-image { 
+                width: 140px; 
+                height: 140px; 
+                font-size: 42px;
+                background-size: cover !important;
+                background-position: center !important;
+            }
+            .service-title { font-size: 17px; }
+            .service-description { font-size: 14px; }
+        }
+        
+        /* Tablet Portrait & Large Mobile (576px - 767px) */
+        @media (min-width: 576px) and (max-width: 767px) {
+            .container { max-width: 540px; }
+            .header-content { flex-direction: column; gap: 15px; text-align: center; padding: 0 15px; }
+            .logo { font-size: 20px; }
+            .post-btn { padding: 10px 20px; }
+            
+            .page-title { font-size: 22px; text-align: center; }
+            
+            .service-card { 
+                flex-direction: column;
+                padding: 20px;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .service-image { 
+                width: 100%;
+                height: 200px;
+                font-size: 48px;
+                order: -1;
+                background-size: cover !important;
+                background-position: center !important;
+                border-radius: 12px;
+            }
+            
+            .service-image img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                border-radius: 12px;
+                display: block;
+            }
+            
+            .service-title { font-size: 18px; line-height: 1.4; }
+            .service-description { font-size: 14px; line-height: 1.5; text-align: left; }
+            
+            .contact-buttons { 
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            
+            .contact-btn { 
+                flex: 0 1 auto;
+                min-width: 100px;
+                padding: 12px 20px;
+            }
+        }
+        
+        /* Mobile (480px - 575px) */
+        @media (min-width: 480px) and (max-width: 575px) {
+            .container { padding: 0 10px; }
+            .header { padding: 12px 0; }
+            .header-content { flex-direction: column; gap: 12px; }
+            .logo { font-size: 18px; }
+            .post-btn { padding: 8px 16px; font-size: 13px; }
+            
+            .search-section { padding: 15px 0; }
+            .search-input { padding: 10px 12px; font-size: 15px; }
+            
+            .breadcrumb { font-size: 12px; overflow-x: auto; white-space: nowrap; }
+            .page-title { font-size: 20px; text-align: center; padding: 15px 0; }
+            
+            .service-card { 
+                flex-direction: column;
+                padding: 15px;
+                gap: 12px;
+                margin-bottom: 15px;
+            }
+            
+            .service-image { 
+                width: 100%;
+                height: 180px;
+                font-size: 40px;
+                background-size: cover !important;
+                background-position: center !important;
+                border-radius: 10px;
+                order: -1;
+            }
+            
+            .service-image img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                border-radius: 10px;
+                display: block;
+            }
+            
+            .service-title { 
+                font-size: 16px;
+                line-height: 1.3;
+                text-align: center;
+            }
+            
+            .service-description { 
+                font-size: 13px;
+                line-height: 1.4;
+                text-align: left;
+            }
+            
+            .contact-buttons { 
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .contact-btn { 
+                width: 100%;
+                padding: 12px;
+                font-size: 14px;
+            }
+        }
+        
+        /* Small Mobile (320px - 479px) */
+        @media (max-width: 479px) {
+            .container { padding: 0 8px; }
+            .header { padding: 10px 0; }
+            .header-content { flex-direction: column; gap: 10px; }
+            .logo { font-size: 16px; }
+            .post-btn { padding: 6px 12px; font-size: 12px; }
+            
+            .search-section { padding: 12px 0; }
+            .search-input { padding: 8px 10px; font-size: 14px; }
+            
+            .breadcrumb { 
+                font-size: 11px;
+                padding: 8px 0;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+            
+            .page-title { 
+                font-size: 18px;
+                text-align: center;
+                padding: 12px 0;
+                line-height: 1.2;
+            }
+            
+            .service-card { 
+                flex-direction: column;
+                padding: 12px;
+                gap: 10px;
+                margin-bottom: 12px;
+                border-radius: 8px;
+            }
+            
+            .service-image { 
+                width: 100%;
+                height: 160px;
+                font-size: 36px;
+                background-size: cover !important;
+                background-position: center !important;
+                border-radius: 8px;
+                order: -1;
+            }
+            
+            .service-image img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                border-radius: 8px;
+                display: block;
+            }
+            
+            .service-title { 
+                font-size: 14px;
+                line-height: 1.3;
+                text-align: center;
+                margin-bottom: 8px;
+            }
+            
+            .service-description { 
+                font-size: 12px;
+                line-height: 1.4;
+                text-align: left;
+                margin-bottom: 10px;
+            }
+            
+            .contact-buttons { 
+                flex-direction: column;
+                gap: 6px;
+            }
+            
+            .contact-btn { 
+                width: 100%;
+                padding: 10px;
+                font-size: 13px;
+            }
+            
+            .new-badge { 
+                top: 4px;
+                left: 4px;
+                font-size: 10px;
+                padding: 2px 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">ProServices</div>
+                <button class="post-btn">POST YOUR AD</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="search-section">
+        <div class="container">
+            <input type="text" class="search-input" placeholder="Search for professional services in your area...">
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="#">ProServices India</a> > <a href="#">Professional Services</a> > <a href="#">Gurgaon Services</a> > Business Consulting
+        </div>
+
+        <h1 class="page-title">Professional Business Services - Gurgaon Consultants</h1>
+
+        <div class="services-container">
+
+    <div class="service-card">
+        <div class="new-badge">NEW</div>
+        <div class="service-image business"><img src="img1.webp" alt=""></div>
+        <div class="service-content">
+            <h3 class="service-title">Professional Business Consulting | Strategic Planning | Growth Solutions</h3>
+            <p class="service-description">
+               I am 💗Priti💗 Provide Escorts Service. NO ADVANCE | Full Service | 100% Satisfaction
+
+Hello sir ⫸ Real Profile ⫸ Genuine Service ⫸ 24/7 Available ⫸ MODELS ⫸ COLLEGE GIRLS Provide good quality, educated profiles at affordable Prices ⫸ 100% Safe and Original Profiles ⫸ Full Satisfaction Guaranteed ⫸ 3/4/5 STAR HOTEL SERVICE
+
+ 19 Years
+ Gurgaon / Gurugram
+            </p>
+            <div class="contact-buttons">
+                <button class="contact-btn call-btn">📞 Call</button>
+                <button class="contact-btn whatsapp-btn">💬 WhatsApp</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="service-card">
+        <div class="service-image marketing"><img src="img2.webp" alt=""></div>
+        <div class="service-content">
+            <h3 class="service-title">Digital Marketing Expert | SEO & Social Media | Professional Web Services</h3>
+            <p class="service-description">
+               Collage Girl ♥️I'm Sandhya 💦 Full nude Video call service 👙 with full enjoy and satisfy
+
+I am independent college girl👩‍🏫 working as Video call Girl 💋 full Nude Video call As you like as your mood Its my guarantee that you will fill like real meet. with maximum satisfaction 💯💯💯💯♀️special specifications♂️💯💯💯 ❤ full nude video call service ❤ phone call sex ❤..
+            </p>
+            <div class="contact-buttons">
+                <button class="contact-btn call-btn">📞 Call</button>
+                <button class="contact-btn whatsapp-btn">💬 WhatsApp</button>
+                <button class="contact-btn telegram-btn">📱 Telegram</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="service-card">
+        <div class="service-image finance"><img src="img3.webp" alt=""></div>
+        <div class="service-content">
+            <h3 class="service-title">Financial Advisory Services | Tax Planning | Investment Consulting</h3>
+            <p class="service-description">
+               Gurugram 🔝Low price high profile call girls available 24x7 Call me
+
+⭐⭐⭐⭐𝗚𝗘𝗡𝗨𝗜𝗡𝗘 𝗦𝗘𝗥𝗩𝗜𝗖𝗘★ ★ 𝐀-𝐋𝐞𝐯𝐞𝐥 (𝟓 𝐬𝐭𝐚𝐫 ) ★ 𝐒𝐭𝐫𝐢𝐩-𝐭𝐞𝐚𝐬𝐞 ★ 𝐁𝐁𝐁𝐉 (𝐁𝐚𝐫𝐞𝐛𝐚𝐜𝐤 𝐁𝐥𝐨𝐰𝐣�..
+            </p>
+            <div class="contact-buttons">
+                <button class="contact-btn call-btn">📞 Call</button>
+                <button class="contact-btn whatsapp-btn">💬 WhatsApp</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="service-card">
+        <div class="new-badge">NEW</div>
+        <div class="service-image legal"><img src="img4.webp" alt=""></div>
+        <div class="service-content">
+            <h3 class="service-title">Legal Services | Corporate Law | Contract Drafting | Legal Consultation</h3>
+            <p class="service-description">
+               😍RUSSIAN AND INDIAN GIRLS AVAILABLE NO ADVANCE CASH ON DELIVERY DIRECTLY PAY TO GIRL WHEN SHE REACHES AT YOUR HOTEL
+
+NO ADVANCE DIRECT PAY TO GIRL IN hotel room ) No advance direct girl ko ROOM mein milne ke baad payment karo ek baar service le kar dekhiye baar baar aege only genuine people message no time pass ★ SAFE AND SECURE HIGH CLASS SERVICE AFFORDABLE RATE Indian girls available Northeast girl available ★ 100% SATISFACTION,UNLIMITE..
+
+ 22 Years
+ Gurgaon / Gurgaon
+            <div class="contact-buttons">
+                <button class="contact-btn call-btn">📞 Call</button>
+                <button class="contact-btn whatsapp-btn">💬 WhatsApp</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="service-card">
+        <div class="service-image tech"><img src="img5.webp" alt=""></div>
+        <div class="service-content">
+            <h3 class="service-title">IT Support Services | Network Setup | Software Solutions | Tech Consulting</h3>
+            <p class="service-description">
+              LOW PRICE 💦💦 FULL NUDE VIDEO CALL SERVICE AVAILABLE 🙏🙏 I AM GUNEIN COLLEGE GIRL 😍😍 PLEASE MAG 24/7 HOURS AVAILABLE ❤️
+
+LOW PRICE 💦💦 FULL NUDE VIDEO CALL SERVICE AVAILABLE 🙏🙏 I AM GUNEIN COLLEGE GIRL 😍😍 PLEASE MAG 24/7 HOURS AVAILABLE ❤️
+
+ 23 Years
+ Gurgaon / Gurgaon
+🇮🇳 Indian
+            </p>
+            <div class="contact-buttons">
+                <button class="contact-btn call-btn">📞 Call</button>
+                <button class="contact-btn whatsapp-btn">💬 WhatsApp</button>
+                <button class="contact-btn telegram-btn">📱 Telegram</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="service-card">
+        <div class="service-image design"><img src="img6.webp" alt=""></div>
+        <div class="service-content">
+            <h3 class="service-title">Graphic Design & Branding | Logo Design | Marketing Materials | Creative Solutions</h3>
+            <p class="service-description">
+               Gurgaon LOW PRICE 2000 UNLIMITED SORT ( 247 ) SERVICE A AVAILABLE 100% SAFE AN
+
+VIP call girl ⭐⭐⭐⭐⭐ WHATSAPP DON'T WEST MY TIME ONLY GENUINE PARSAN FOR Call ENJOY NUDE B TO B MASSAG IN CALL AND OUT CALL FACILITY HOTEL AND HOME SERVICE ALSO AVAILABLE
+            </p>
+            <div class="contact-buttons">
+                <button class="contact-btn call-btn">📞 Call</button>
+                <button class="contact-btn whatsapp-btn">💬 WhatsApp</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="service-card">
+        <div class="new-badge">NEW</div>
+        <div class="service-image realestate"><img src="img7.webp" alt=""></div>
+        <div class="service-content">
+            <h3 class="service-title">Real Estate Consultant | Property Investment | Buying & Selling | Market Analysis</h3>
+            <p class="service-description">
+               GURUGRAM vip LOW RATE ESCORT FULL HARD FUCK WITH NAUGHTY IF YOU WANT TO FUCK MY PUSSY WITH BIG BOOBS GIRLS- CALL AND WHATSAPP
+            </p>
+            <div class="contact-buttons">
+                <button class="contact-btn call-btn">📞 Call</button>
+                <button class="contact-btn whatsapp-btn">💬 WhatsApp</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="service-card">
+        <div class="service-image fitness"><img src="img8.webp" alt=""></div>
+        <div class="service-content">
+            <h3 class="service-title">Personal Fitness Trainer | Nutrition Coaching | Weight Management | Health Consulting</h3>
+            <p class="service-description">
+               NO ADVANCE ✅💫 Lucknow 24/7📞 VIP COLLEGE GIRLS AVAILABLE UNLIMITED SHORT WITHOUT CONDAM SERVICE AVAILABLE
+
+CASH ON DROP IN HOTELS ROOM ) 100% Customers Satisfaction Guarantee Vip Profiles Top Grade Service Cooperative All round Service. This Ads Is Only For Those Clients Who Are Looking For Genuine Call Girl' & Escorts Service
+            <div class="contact-buttons">
+                <button class="contact-btn call-btn">📞 Call</button>
+                <button class="contact-btn whatsapp-btn">💬 WhatsApp</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="service-card">
+        <div class="service-image education"><img src="img9.webp" alt=""></div>
+        <div class="service-content">
+            <h3 class="service-title">Educational Tutoring | Academic Support | Test Preparation | Online Classes</h3>
+            <p class="service-description">
+                Experienced educator providing comprehensive tutoring services. Subject-specific tutoring, test preparation, 
+                and academic support for students of all levels. Both online and in-person classes available.
+            </p>
+            <div class="contact-buttons">
+                <button class="contact-btn call-btn">📞 Call</button>
+                <button class="contact-btn whatsapp-btn">💬 WhatsApp</button>
+                <button class="contact-btn telegram-btn">📱 Telegram</button>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h4>ProServices</h4>
+                    <p>Your trusted marketplace for professional services. Connect with verified service providers in your area.</p>
+                    <div class="social-links">
+                        <a href="#">📘</a>
+                        <a href="#">🐦</a>
+                        <a href="#">📷</a>
+                        <a href="#">💼</a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Popular Services</h4>
+                    <ul>
+                        <li><a href="#">Business Consulting</a></li>
+                        <li><a href="#">Digital Marketing</a></li>
+                        <li><a href="#">Legal Services</a></li>
+                        <li><a href="#">IT Support</a></li>
+                        <li><a href="#">Financial Advisory</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Popular Cities</h4>
+                    <ul>
+                        <li><a href="#">Gurgaon Services</a></li>
+                        <li><a href="#">Delhi Services</a></li>
+                        <li><a href="#">Noida Services</a></li>
+                        <li><a href="#">Mumbai Services</a></li>
+                        <li><a href="#">Bangalore Services</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Safety Tips</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 ProServices. All rights reserved. | Made with ❤️ for professional service providers</p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
